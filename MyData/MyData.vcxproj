@@ -100,7 +100,7 @@
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\MyData.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>..\..\LibDbg64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Except1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\Except1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -188,7 +188,7 @@ copy $(TargetPath) ..\..\ExeDbg64\$(TargetName).dll</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\MyData.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>..\..\Lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Except1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)\$(Platform)\$(Configuration)\Except1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

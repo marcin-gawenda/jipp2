@@ -57,6 +57,9 @@
     <ClInclude Include="CDialogInputData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CDialogGetLastItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Project_MFC.cpp">
@@ -90,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CDialogInputData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CDialogGetLastItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

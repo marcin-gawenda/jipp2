@@ -14,11 +14,11 @@
 #include "Project_MFCView.h"
 
 #include "CDialogInputData.h"
+#include "CDialogGetLastItem.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // CProjectMFCView
 
@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CProjectMFCView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_OPERATE_INPUTDATA, &CProjectMFCView::OnOperateInputdata)
+	ON_COMMAND(ID_OPERATE_GETLASTITEM, &CProjectMFCView::OnOperateGetlastitem)
 END_MESSAGE_MAP()
 
 // CProjectMFCView construction/destruction
@@ -265,5 +266,9 @@ void CProjectMFCView::OnOperateInputdata()
 	dlg.DoModal();
 }
 
-
-
+void CProjectMFCView::OnOperateGetlastitem()
+{
+	CProjectMFCDoc* pDoc = GetDocument();
+	CDialogGetLastItem dlg(pDoc);
+	dlg.DoModal();
+}

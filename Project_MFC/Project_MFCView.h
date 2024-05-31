@@ -61,6 +61,7 @@ protected:
 public:
 	afx_msg void OnOperateInputdata();
 	virtual void OnInitialUpdate();
+	afx_msg void OnOperateGetlastitem();
 };
 
 #ifndef _DEBUG  // debug version in Project_MFCView.cpp

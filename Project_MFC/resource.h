@@ -100,6 +100,8 @@
 #define IDC_DATA_TEXT                   1008
 #define ID_OPERATE_INPUTDATA            32771
 #define ID_OPERATE_GETLASTITEM          32772
+#define IDC_BUTTON_DEL_ALL              32774
+#define IDC_EDIT_NAME		  			32775
 
 // Next default values for new objects
 // 

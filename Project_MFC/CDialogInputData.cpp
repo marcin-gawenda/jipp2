@@ -5,7 +5,7 @@
 #include "Project_MFC.h"
 #include "CDialogInputData.h"
 #include "afxdialogex.h"
-
+#include "Utils.h"
 
 // CDialogInputData dialog
 
@@ -13,12 +13,15 @@ IMPLEMENT_DYNAMIC(CDialogInputData, CDialogEx)
 
 CDialogInputData::CDialogInputData(CProjectMFCDoc* pDoc, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_INPUT_DATA, pParent)
-	, m_X(0)
-	, m_Y(0)
+	, m_X(1)
+	, m_Y(1)
+
 {
 	pDocum = pDoc;
 	memset((void*)&lvi, 0, sizeof(LVITEMA));
 	pDat = pDocum->pDat;	
+	//m_color = RGB(255, 0, 0);
+	m_name = "init";
 }
 
 CDialogInputData::~CDialogInputData()
@@ -32,6 +35,25 @@ void CDialogInputData::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_CTRL, m_ListCtrl);
 	DDX_Text(pDX, IDC_EDIT_X, m_X);
 	DDX_Text(pDX, IDC_EDIT_Y, m_Y);
+
+	// Temporary CString for data exchange
+	CString tempStr;
+	tempStr = "M1";
+	//tempStr = m_name;
+	DDX_Text(pDX, IDC_EDIT_NAME, tempStr);
+	
+
+	//if (pDX->m_bSaveAndValidate) {
+	//	// Copy data from the edit control to m_Y
+	//	DDX_Text(pDX, IDC_EDIT_NAME, tempStr);
+	//	// Ensure we do not overflow the buffer
+	//	strncpy(m_name, tempStr, 255);
+	//	m_name[255] = '\0'; // Null-terminate to be safe
+	//} else {
+	//	// Copy data from m_name to the edit control
+	//	tempStr = m_name;
+	//	DDX_Text(pDX, IDC_EDIT_NAME, tempStr);
+	//}
 }
 
 
@@ -39,6 +61,7 @@ BEGIN_MESSAGE_MAP(CDialogInputData, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CDialogInputData::OnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_MOD, &CDialogInputData::OnClickedButtonMod)
 	ON_BN_CLICKED(IDC_BUTTON_DEL, &CDialogInputData::OnClickedButtonDel)
+	ON_BN_CLICKED(IDC_BUTTON_DEL_ALL, &CDialogInputData::OnClickedButtonDelAll)
 	ON_NOTIFY(LVN_ITEMCHANGING, IDC_LIST_CTRL, &CDialogInputData::OnItemchangingListCtrl)
 	ON_BN_CLICKED(IDOK, &CDialogInputData::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BUTTON_COLOR, &CDialogInputData::OnClickedButtonColor)
@@ -51,7 +74,7 @@ BOOL CDialogInputData::OnInitDialog()
 	// TODO:  Add extra initialization here
 	VERIFY(m_ColorBox.SubclassDlgItem(IDC_STATIC_COLOR, this));
 
-	CString strx, stry, color;
+	CString strx, stry, color, name;
 
 	lvi.mask = LVIF_TEXT;
 	lvi.state = 0;
@@ -69,13 +92,14 @@ BOOL CDialogInputData::OnInitDialog()
 	m_ListCtrl.GetClientRect(&rectListCtrl);
 
 	int list_ctrl_width = rectListCtrl.right - rectListCtrl.left;
-	int column_width = list_ctrl_width / 3;
+	int column_width = list_ctrl_width / 4;
 
 	int ret;
 	int nFormat = LVCFMT_LEFT;
 	ret = m_ListCtrl.InsertColumn(0, "X", nFormat, column_width, 0);
 	ret = m_ListCtrl.InsertColumn(1, "Y", nFormat, column_width, 1);
-	ret = m_ListCtrl.InsertColumn(2, "color", nFormat, column_width, 2);
+	ret = m_ListCtrl.InsertColumn(2, "Color", nFormat, column_width, 2);
+	ret = m_ListCtrl.InsertColumn(3, "Name", nFormat, column_width, 3);
 
 	ASSERT(pDat);
 	int no_item = pDat->size();
@@ -91,15 +115,18 @@ BOOL CDialogInputData::OnInitDialog()
 		size_t Len = strlen(strx);
 		stry.Format("%le", pt.y);
 		Len += strlen(stry);
-		//color.Format("%d", pt.color);
-		//Len += strlen(color);
+		color.Format("%d", pt.color);
+		Len += strlen(color);
+		//name.Format("%d", pt.name);
+		Len += strlen(name);
 
 		lvi.pszText = " ";
 		lvi.cchTextMax = (int)Len;
 		ret = m_ListCtrl.InsertItem(&lvi);
 		m_ListCtrl.SetItemText(lvi.iItem, 0, strx);
 		m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
-		//m_ListCtrl.SetItemText(lvi.iItem, 2, color);
+		m_ListCtrl.SetItemText(lvi.iItem, 2, color);
+		m_ListCtrl.SetItemText(lvi.iItem, 3, name);
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -125,8 +152,10 @@ void CDialogInputData::ModifyData()
 		tmp.x = atof(st);
 		ret = m_ListCtrl.GetItemText(nItem, 1, st, sizeof(st));
 		tmp.y = atof(st);
-		//ret = m_ListCtrl.GetItemText(nItem, 2, st, sizeof(st));
-		//tmp.color = atol(st);
+		ret = m_ListCtrl.GetItemText(nItem, 2, st, sizeof(st));
+		tmp.color = atol(st);
+		ret = m_ListCtrl.GetItemText(nItem, 3, st, sizeof(st));
+		tmp.name = st;
 
 		pDat->Push(tmp);
 	}
@@ -153,7 +182,7 @@ void CDialogInputData::OnClickedButtonAdd()
 	int nItem = m_ListCtrl.GetItemCount();
 	int ret = -1;
 	MY_POINT tmp;
-	CString strx, stry, color;
+	CString strx, stry, name;
 
 	UpdateData(TRUE);
 
@@ -162,9 +191,16 @@ void CDialogInputData::OnClickedButtonAdd()
 	strx.Format("%le", m_X);
 	size_t Len = strlen(strx);
 	stry.Format("%le", m_Y);
-	//Len += strlen(stry);
-	//color.Format("%d", m_color);
-	//Len += strlen(color);
+	Len += strlen(stry);
+
+	char* strColor = Utils::ColorRefToCharArray(m_ColorBox.GetColor());
+	//LPCTSTR strColor = Utils::ColorRefToString(m_ColorBox.GetColor()).c_str();
+	//LPCTSTR strColor = Utils::ColorRefToString(m_ColorBox.GetColor());
+	Len += strlen(strColor);
+
+	tmp.name = m_name;
+	//name.Format("%d", m_name);
+	Len += strlen(m_name);
 
 	lvi.iItem = nItem;
 	lvi.pszText = " ";
@@ -172,7 +208,10 @@ void CDialogInputData::OnClickedButtonAdd()
 	ret = m_ListCtrl.InsertItem(&lvi);
 	m_ListCtrl.SetItemText(lvi.iItem, 0, strx);
 	m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
-	//m_ListCtrl.SetItemText(lvi.iItem, 2, color);
+	//m_ListCtrl.SetItemText(lvi.iItem, 2, strColor);
+	m_ListCtrl.SetItemText(lvi.iItem, 2, "RGB(0, 0, 255)");
+	//m_ListCtrl.SetTextBkColor(RGB(0, 0, 255));
+	m_ListCtrl.SetItemText(lvi.iItem, 3, m_name);
 
 	UpdateData(FALSE);
 
@@ -192,7 +231,7 @@ void CDialogInputData::OnClickedButtonMod()
 		return;
 
 	MY_POINT tmp;
-	CString strx, stry, color;
+	CString strx, stry, color, name;
 	int nItem = m_SelItem;
 
 	UpdateData(TRUE);
@@ -204,7 +243,7 @@ void CDialogInputData::OnClickedButtonMod()
 	stry.Format("%le", m_Y);
 	Len += strlen(stry);
 	//color.Format("%d", m_color);
-	//Len += strlen(color);
+	Len += strlen(color);
 
 	lvi.iItem = nItem;
 	//lvi.pszText = " ";
@@ -212,7 +251,8 @@ void CDialogInputData::OnClickedButtonMod()
 	//ret = ListCtrl.InsertItem(&lvi);
 	m_ListCtrl.SetItemText(lvi.iItem, 0, strx);
 	m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
-	//m_ListCtrl.SetItemText(lvi.iItem, 2, color);
+	m_ListCtrl.SetItemText(lvi.iItem, 2, color);
+	m_ListCtrl.SetItemText(lvi.iItem, 3, name);
 
 	UpdateData(FALSE);
 
@@ -239,6 +279,21 @@ void CDialogInputData::OnClickedButtonDel()
 	pDocum->UpdateAllViews(NULL);
 }
 
+void CDialogInputData::OnClickedButtonDelAll()
+{
+	if (m_ListCtrl.GetItemCount() == 0) return;
+
+	// TODO: Add your control notification handler code here
+	int ret = -1;
+	UpdateData(TRUE);	
+	m_ListCtrl.DeleteAllItems();
+	UpdateData(FALSE);
+
+	ASSERT_VALID(pDocum);
+	pDocum->SetModifiedFlag();
+	pDocum->UpdateAllViews(NULL);
+}
+
 void CDialogInputData::OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
@@ -257,15 +312,42 @@ void CDialogInputData::OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 	char st[512];
 	BOOL ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
 	m_X = atof(st);
+
 	ncol = 1;
 	ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
 	m_Y = atof(st);
+	
 	ncol = 2;
-	//ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
+	ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
 	//m_color = atol(st);
 
-	m_ColorBox.SetItem(nItem);
+	//m_ColorBox.SetItem(nItem);
+	COLORREF color = Utils::StringToColorRef(st);
+	m_ColorBox.SetColor(color);
 	m_ColorBox.Invalidate();
+
+	ncol = 3;
+	ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
+
+	if (strlen(st) == 0) {
+		char str[100];         // Buffer to hold the final concatenated string
+		const char* baseStr = "P-";
+
+		// Convert integer to string
+		char numStr[10];
+		sprintf_s(numStr, sizeof(numStr), "%d", nItem);
+
+		// Copy baseStr to str
+		strcpy_s(str, sizeof(str), baseStr);
+
+		// Concatenate the integer string to the base string
+		strcat_s(str, sizeof(str), numStr);
+		m_name = str;
+	}
+	else {
+		m_name = st;
+	}
+	
 
 	UpdateData(FALSE);
 }
@@ -316,7 +398,6 @@ void CColorBox::SetItem(int i)
 	int ii = i % (sizeof(tab) / sizeof(tab[0]));
 	color = tab[ii];
 }
-
 
 
 

@@ -36,16 +36,23 @@ public:
 #pragma pack(push, 1)
 class CExcept1App;
 
-class MYDATA_API MY_POINT
-{
+class MYDATA_API MY_COORD {
 public:
 	double x;
 	double y;
+};
+
+class MYDATA_API MY_POINT : virtual public MY_COORD
+{
 public:
-	MY_POINT() : x(0), y(0) {}
-	MY_POINT(double xx, double yy) : x(xx), y(yy) {}
-	~MY_POINT() {}
-	void set(double xx, double yy) { x = xx; y = yy; }
+	char* name = nullptr;
+	int numb;
+	COLORREF color;
+
+	MY_POINT() { x = 0; y = 0; name = nullptr, numb = 0; color = 0x00000000; }
+	MY_POINT(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = 0x00000000) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
+	~MY_POINT() { if (name) { delete[] name; name = nullptr; } }
+	void set(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = 0x00000000) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
 	MY_POINT get() { return *this; }
 };
 

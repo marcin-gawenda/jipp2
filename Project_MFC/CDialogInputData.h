@@ -12,6 +12,7 @@ public:
 	void SetData(MY_DATA* pData) { pDat = pData; }
 	void SetItem(int i);
 	void SetColor(COLORREF col) { color = col; }
+	COLORREF GetColor() { return color; }
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -53,12 +54,15 @@ public:
 
 	double m_X;
 	double m_Y;
+	//long m_color;
+	char* m_name;
 
 	CColorBox m_ColorBox;
 
 	afx_msg void OnClickedButtonAdd();
 	afx_msg void OnClickedButtonMod();
 	afx_msg void OnClickedButtonDel();
+	afx_msg void OnClickedButtonDelAll();
 	
 	afx_msg void OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedOk();

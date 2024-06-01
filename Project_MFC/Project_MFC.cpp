@@ -11,6 +11,7 @@
 
 #include "Project_MFCDoc.h"
 #include "Project_MFCView.h"
+#include "Utils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

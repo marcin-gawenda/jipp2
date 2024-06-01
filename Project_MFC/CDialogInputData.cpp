@@ -144,6 +144,7 @@ void CDialogInputData::ModifyData()
 		tmp.y = atof(strY);
 		tmp.color = Utils::CStringToColorRef(strColor);
 		tmp.name = Utils::CStringToCharArray(strName);
+		tmp.numb = nItem;
 
 		pDat->Push(tmp);
 	}

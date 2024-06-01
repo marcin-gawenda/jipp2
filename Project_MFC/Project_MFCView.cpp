@@ -15,6 +15,7 @@
 
 #include "CDialogInputData.h"
 #include "CDialogGetLastItem.h"
+#include "CDialogFindByName.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -33,6 +34,7 @@ BEGIN_MESSAGE_MAP(CProjectMFCView, CView)
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_OPERATE_INPUTDATA, &CProjectMFCView::OnOperateInputdata)
 	ON_COMMAND(ID_OPERATE_GETLASTITEM, &CProjectMFCView::OnOperateGetlastitem)
+	ON_COMMAND(ID_OPERATE_FIND_BY_NAME, &CProjectMFCView::OnOperateFindByName)
 END_MESSAGE_MAP()
 
 // CProjectMFCView construction/destruction
@@ -270,5 +272,12 @@ void CProjectMFCView::OnOperateGetlastitem()
 {
 	CProjectMFCDoc* pDoc = GetDocument();
 	CDialogGetLastItem dlg(pDoc);
+	dlg.DoModal();
+}
+
+void CProjectMFCView::OnOperateFindByName()
+{
+	CProjectMFCDoc* pDoc = GetDocument();
+	CDialogFindByName dlg(pDoc);
 	dlg.DoModal();
 }

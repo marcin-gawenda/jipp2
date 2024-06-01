@@ -86,6 +86,7 @@
 #define IDS_EDIT_MENU                   306
 #define IDD_DIALOG_INPUT_DATA           310
 #define IDD_DIALOG_GET_LAST_ITEM        316
+#define IDD_DIALOG_FIND_BY_NAME         317
 #define IDC_LIST_CTRL                   1000
 #define IDC_EDIT_X                      1001
 #define IDS_STRING101                   1001
@@ -101,13 +102,17 @@
 #define ID_OPERATE_INPUTDATA            32771
 #define ID_OPERATE_GETLASTITEM          32772
 #define IDC_BUTTON_DEL_ALL              32774
-#define IDC_EDIT_NAME		  			32775
+#define IDC_EDIT_NAME                   32775
+#define IDC_DATA_FIND_BY_NAME_OUTPUT    32776
+#define IDC_EDIT_NAME_TO_FIND           32777
+#define IDC_BUTTON_FIND                 32778
+#define ID_OPERATE_FIND_BY_NAME         32779
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        318
+#define _APS_NEXT_RESOURCE_VALUE        319
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           310

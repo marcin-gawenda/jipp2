@@ -55,6 +55,7 @@ public:
 	double m_X;
 	double m_Y;
 	COLORREF m_Color;
+
 	CColorBox m_ColorBox;
 	CString m_name;
 

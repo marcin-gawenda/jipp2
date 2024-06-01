@@ -62,6 +62,7 @@ public:
 	afx_msg void OnOperateInputdata();
 	virtual void OnInitialUpdate();
 	afx_msg void OnOperateGetlastitem();
+	afx_msg void OnOperateFindByName();
 };
 
 #ifndef _DEBUG  // debug version in Project_MFCView.cpp

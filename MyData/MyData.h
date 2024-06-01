@@ -51,13 +51,17 @@ public:
 
 	// RGB(200, 200, 200)
 	// _color = 0x00000000
-	//MY_POINT() { x = 0; y = 0; name = nullptr, numb = 0; color = RGB(200, 200, 200); }
-	MY_POINT() { x = 1; y = 1; name = _T("ALA"), numb = 1; color = RGB(200, 200, 200); }
+	MY_POINT() { x = 0; y = 0; name = nullptr, numb = 0; color = RGB(200, 200, 200); }	
 	MY_POINT(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = RGB(200, 200, 200)) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
 	~MY_POINT() {}
 	//~MY_POINT() { if (name) { delete[] name; name = nullptr; } }
 	void set(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = RGB(200, 200, 200)) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
 	MY_POINT get() { return *this; }
+
+	// is capable to compare MY_POINT to do std::string
+	bool operator==(const CString& key) const {
+		return CString(name) == key;
+	}
 };
 
 class MYDATA_API MY_DATA : public MY_POINT

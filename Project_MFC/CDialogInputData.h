@@ -8,7 +8,7 @@ public:
 	COLORREF color;
 	MY_DATA* pDat;
 
-	CColorBox() : pDat(NULL) { color = RGB(255, 255, 255); }
+	CColorBox() : pDat(NULL) { color = RGB(200, 200, 200); }
 	void SetData(MY_DATA* pData) { pDat = pData; }
 	void SetItem(int i);
 	void SetColor(COLORREF col) { color = col; }
@@ -54,11 +54,9 @@ public:
 
 	double m_X;
 	double m_Y;
-	//long m_color;
-	char* m_name;
-
 	CColorBox m_ColorBox;
-
+	CString m_name;
+	
 	afx_msg void OnClickedButtonAdd();
 	afx_msg void OnClickedButtonMod();
 	afx_msg void OnClickedButtonDel();
@@ -67,4 +65,8 @@ public:
 	afx_msg void OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnClickedButtonColor();
+
+	afx_msg void GetListCtrlItemText(int nItem, int nCol, CString& outText);
+	afx_msg void SelectLastItemInListCtrl();
+
 };

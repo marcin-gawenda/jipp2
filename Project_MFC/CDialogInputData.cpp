@@ -92,19 +92,23 @@ BOOL CDialogInputData::OnInitDialog()
 	{
 		MY_POINT pt = (*pDat)[i];
 		lvi.iItem = i;
+		
 		strx.Format("%le", pt.x);
 		size_t Len = strlen(strx);
+
 		stry.Format("%le", pt.y);
 		Len += strlen(stry);
 
-		strColor = Utils::ColorRefToCharArray(pt.color);
-		Len += strlen(strColor);	
-		strName = pt.name;
+		strColor = Utils::ColorRefToCString(pt.color);
+		Len += strlen(strColor);
+		
+		strName = Utils::CharArrayToCString(pt.name);
 		Len += strlen(strName);
 
 		lvi.pszText = " ";
 		lvi.cchTextMax = (int)Len;
 		ret = m_ListCtrl.InsertItem(&lvi);
+		
 		m_ListCtrl.SetItemText(lvi.iItem, 0, strx);
 		m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
 		m_ListCtrl.SetItemText(lvi.iItem, 2, strColor);
@@ -117,7 +121,7 @@ BOOL CDialogInputData::OnInitDialog()
 
 void CDialogInputData::ModifyData()
 {
-	char st[512];
+	char st[512]{0};
 	BOOL ret(0);
 	MY_POINT tmp;
 
@@ -130,14 +134,16 @@ void CDialogInputData::ModifyData()
 
 	for (int nItem = 0; nItem < no_it; ++nItem)
 	{
-		BOOL ret = m_ListCtrl.GetItemText(nItem, 0, st, sizeof(st));
-		tmp.x = atof(st);
-		ret = m_ListCtrl.GetItemText(nItem, 1, st, sizeof(st));
-		tmp.y = atof(st);
-		ret = m_ListCtrl.GetItemText(nItem, 2, st, sizeof(st));
-		tmp.color = Utils::CStringToColorRef(st);
-		ret = m_ListCtrl.GetItemText(nItem, 3, st, sizeof(st));
-		tmp.name = st;
+		CString strX, strY, strColor, strName;
+		GetListCtrlItemText(nItem, 0, strX);
+		GetListCtrlItemText(nItem, 1, strY);
+		GetListCtrlItemText(nItem, 2, strColor);
+		GetListCtrlItemText(nItem, 3, strName);
+
+		tmp.x = atof(strX);
+		tmp.y = atof(strY);
+		tmp.color = Utils::CStringToColorRef(strColor);
+		tmp.name = Utils::CStringToCharArray(strName);
 
 		pDat->Push(tmp);
 	}
@@ -154,7 +160,6 @@ void CDialogInputData::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
 	CDialogEx::OnOK();
-
 	ModifyData();
 }
 
@@ -174,7 +179,7 @@ void CDialogInputData::OnClickedButtonAdd()
 	stry.Format("%le", m_Y);
 	Len += strlen(stry);
 
-	strColor = Utils::CharArrayToCString(Utils::ColorRefToCharArray(m_ColorBox.GetColor()));
+	strColor = Utils::ColorRefToCString(m_ColorBox.GetColor());
 	Len += strlen(strColor);
 
 	strName = m_name;
@@ -185,11 +190,11 @@ void CDialogInputData::OnClickedButtonAdd()
 		strName = "P-" + strNumber;
 	}
 	Len += strlen(strName);
-
-	
+		
 	lvi.iItem = nItem;
 	lvi.pszText = " ";
 	lvi.cchTextMax = (int)Len;
+	
 	ret = m_ListCtrl.InsertItem(&lvi);
 	m_ListCtrl.SetItemText(lvi.iItem, 0, strx);
 	m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
@@ -216,26 +221,21 @@ void CDialogInputData::OnClickedButtonMod()
 	if (m_SelItem < 0 || m_SelItem >= no_item)
 		return;
 
-	MY_POINT tmp;
 	CString strx, stry, strColor, strName;
 
 	int nItem = m_SelItem;
 
 	UpdateData(TRUE);
 
-	tmp.x = m_X;
 	strx.Format("%le", m_X);
 	size_t Len = strlen(strx);
 
-	tmp.y = m_Y;
 	stry.Format("%le", m_Y);
 	Len += strlen(stry);
 
-	tmp.color = m_ColorBox.GetColor();
-	strColor = Utils::CharArrayToCString(Utils::ColorRefToCharArray(m_ColorBox.GetColor()));
+	strColor = Utils::ColorRefToCString(m_ColorBox.GetColor());
 	Len += strlen(strColor);
 	
-	tmp.name = Utils::CStringToCharArray(m_name);
 	strName = m_name;
 	Len += strlen(strName);
 
@@ -319,7 +319,6 @@ void CDialogInputData::OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 		m_ColorBox.SetColor(Utils::CStringToColorRef(strColor));
 		m_ColorBox.Invalidate();
 		
-
 		m_name = strName;
 
 		// Update dialog controls
@@ -397,7 +396,6 @@ void CDialogInputData::ResetValues()
 	m_ColorBox.Invalidate();
 	m_name = "";
 }
-
 
 void CDialogInputData::SelectLastItemInListCtrl()
 {

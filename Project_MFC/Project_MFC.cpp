@@ -190,6 +190,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+
 END_MESSAGE_MAP()
 
 // App command to run the dialog
@@ -222,6 +223,3 @@ void CProjectMFCApp::SaveCustomState()
 }
 
 // CProjectMFCApp message handlers
-
-
-

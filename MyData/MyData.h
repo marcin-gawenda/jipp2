@@ -49,12 +49,14 @@ public:
 	int numb;
 	COLORREF color;
 
-	// RGB(0, 255, 0)
-	MY_POINT() { x = 0; y = 0; name = nullptr, numb = 0; color = 0x00000000; }
-	MY_POINT(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = 0x00000000) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
+	// RGB(200, 200, 200)
+	// _color = 0x00000000
+	//MY_POINT() { x = 0; y = 0; name = nullptr, numb = 0; color = RGB(200, 200, 200); }
+	MY_POINT() { x = 1; y = 1; name = _T("ALA"), numb = 1; color = RGB(200, 200, 200); }
+	MY_POINT(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = RGB(200, 200, 200)) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
 	~MY_POINT() {}
-	// ~MY_POINT() { if (name) { delete[] name; name = nullptr; } }
-	void set(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = 0x00000000) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
+	//~MY_POINT() { if (name) { delete[] name; name = nullptr; } }
+	void set(double xx, double yy, char* _name = nullptr, int _numb = 0, COLORREF _color = RGB(200, 200, 200)) { x = xx; y = yy; name = _name; numb = _numb; color = _color; }
 	MY_POINT get() { return *this; }
 };
 

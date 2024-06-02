@@ -13,14 +13,14 @@ IMPLEMENT_DYNAMIC(CDialogInputData, CDialogEx)
 
 CDialogInputData::CDialogInputData(CProjectMFCDoc* pDoc, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_INPUT_DATA, pParent)
-	, m_X(1)
-	, m_Y(1)	
+	, m_X(0)
+	, m_Y(0)	
+	, m_Color(RGB(0, 255, 0)) // Initializing the color member variable
 {
 	pDocum = pDoc;
 	memset((void*)&lvi, 0, sizeof(LVITEMA));
 	pDat = pDocum->pDat;	
-	m_ColorBox.SetColor(RGB(0, 255, 0));
-	m_name = "P-";
+	m_ColorBox.SetColor(m_Color);	
 }
 
 CDialogInputData::~CDialogInputData()
@@ -35,7 +35,6 @@ void CDialogInputData::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_X, m_X);
 	DDX_Text(pDX, IDC_EDIT_Y, m_Y);
 	DDX_Text(pDX, IDC_EDIT_NAME, m_name);
-	
 }
 
 
@@ -46,7 +45,7 @@ BEGIN_MESSAGE_MAP(CDialogInputData, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_DEL_ALL, &CDialogInputData::OnClickedButtonDelAll)
 	ON_NOTIFY(LVN_ITEMCHANGING, IDC_LIST_CTRL, &CDialogInputData::OnItemchangingListCtrl)
 	ON_BN_CLICKED(IDOK, &CDialogInputData::OnBnClickedOk)
-	ON_BN_CLICKED(IDC_BUTTON_COLOR, &CDialogInputData::OnClickedButtonColor)
+	ON_BN_CLICKED(IDC_BUTTON_COLOR, &CDialogInputData::OnClickedButtonColor)	
 END_MESSAGE_MAP()
 
 BOOL CDialogInputData::OnInitDialog()
@@ -179,6 +178,12 @@ void CDialogInputData::OnClickedButtonAdd()
 	Len += strlen(strColor);
 
 	strName = m_name;
+	if (strName == "" || strName == "P-") {
+		// Convert int to CString
+		CString strNumber;
+		strNumber.Format(_T("%d"), nItem);
+		strName = "P-" + strNumber;
+	}
 	Len += strlen(strName);
 
 	
@@ -190,21 +195,20 @@ void CDialogInputData::OnClickedButtonAdd()
 	m_ListCtrl.SetItemText(lvi.iItem, 1, stry);
 	m_ListCtrl.SetItemText(lvi.iItem, 2, strColor);
 	m_ListCtrl.SetItemText(lvi.iItem, 3, strName);
-	
-	UpdateData(FALSE);
 
-	SelectLastItemInListCtrl();
+	UpdateData(FALSE);
 
 	ASSERT_VALID(pDocum);
 	pDocum->SetModifiedFlag();
 	pDocum->UpdateAllViews(NULL);
 
-	
+	//SelectLastItemInListCtrl();
 }
 
 
 void CDialogInputData::OnClickedButtonMod()
 {
+
 	// TODO: Add your control notification handler code here
 	int ret = -1;
 	int no_item = m_ListCtrl.GetItemCount();
@@ -287,36 +291,40 @@ void CDialogInputData::OnItemchangingListCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: Add your control notification handler code here
 	*pResult = 0;
 
-	UpdateData(TRUE);
+	// Ensure that the new state includes selection
+	if ((pNMLV->uChanged & LVIF_STATE) &&
+		(pNMLV->uNewState & LVIS_SELECTED))
+	{
 
-	int nItem = m_SelItem = pNMLV->iItem;
-	int no_item = m_ListCtrl.GetItemCount();
+		UpdateData(TRUE);
 
-	if (m_SelItem < 0 || m_SelItem >= no_item)
-		return;
+		int nItem = m_SelItem = pNMLV->iItem;
+		int no_item = m_ListCtrl.GetItemCount();
 
+		if (nItem < 0 || nItem >= no_item)
+			return;
 
-	CString text;
-	GetListCtrlItemText(nItem, 0, text);
+		// Retrieve text from the selected item's columns
+		CString strX, strY, strColor, strName;
+		GetListCtrlItemText(nItem, 0, strX);
+		GetListCtrlItemText(nItem, 1, strY);
+		GetListCtrlItemText(nItem, 2, strColor);
+		GetListCtrlItemText(nItem, 3, strName);
 
-	//int ncol = 0;
-	//char st[512];
-	//BOOL ret = m_ListCtrl.GetItemText(nItem, ncol, st, sizeof(st));
-	m_X = atof(text);
+		// Update dialog controls with the selected item's data
+		m_X = _tstof(strX);
+		m_Y = _tstof(strY);
 
-	GetListCtrlItemText(nItem, 1, text);
-	m_Y = atof(text);
-	
-	GetListCtrlItemText(nItem, 2, text);
-	COLORREF color = Utils::CStringToColorRef(text);
-	m_ColorBox.SetColor(color);
-	m_ColorBox.Invalidate();
+		// set color according to selected item
+		m_ColorBox.SetColor(Utils::CStringToColorRef(strColor));
+		m_ColorBox.Invalidate();
+		
 
-	GetListCtrlItemText(nItem, 3, text);
-	m_name = text;
-	
+		m_name = strName;
 
-	UpdateData(FALSE);
+		// Update dialog controls
+		UpdateData(FALSE);
+	}
 }
 
 void CDialogInputData::OnClickedButtonColor()
@@ -368,15 +376,35 @@ void CColorBox::SetItem(int i)
 
 void CDialogInputData::GetListCtrlItemText(int nItem, int nCol, CString& outText)
 {
-	TCHAR szText[256];  // Buffer to store the text
+	TCHAR szText[256]{0};  // Buffer to store the text
 	m_ListCtrl.GetItemText(nItem, nCol, szText, sizeof(szText) / sizeof(TCHAR));
 	outText = szText;
 }
 
+
+void CDialogInputData::IncreaseValues()
+{
+	m_X += 1;
+	m_Y += 1;
+	m_name = "inc";
+}
+
+void CDialogInputData::ResetValues()
+{
+	m_X = 0;
+	m_Y = 0;
+	m_ColorBox.SetColor(RGB(0,255,0));
+	m_ColorBox.Invalidate();
+	m_name = "";
+}
+
+
 void CDialogInputData::SelectLastItemInListCtrl()
 {
+
 	// Ensure the list control has items
 	int itemCount = m_ListCtrl.GetItemCount();
+
 	if (itemCount == 0)
 		return;
 
@@ -386,12 +414,8 @@ void CDialogInputData::SelectLastItemInListCtrl()
 	// Ensure the last item is visible
 	m_ListCtrl.EnsureVisible(lastIndex, FALSE);
 
-	// Set the state of the last item to selected
+	// Set the state of the last item to selected and focused
 	m_ListCtrl.SetItemState(lastIndex, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	m_ListCtrl.SetSelectionMark(lastIndex); // Set the selection mark to the second item
 }
-
-
-
-
-
 

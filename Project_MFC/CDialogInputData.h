@@ -54,9 +54,10 @@ public:
 
 	double m_X;
 	double m_Y;
+	COLORREF m_Color;
 	CColorBox m_ColorBox;
 	CString m_name;
-	
+
 	afx_msg void OnClickedButtonAdd();
 	afx_msg void OnClickedButtonMod();
 	afx_msg void OnClickedButtonDel();
@@ -67,6 +68,7 @@ public:
 	afx_msg void OnClickedButtonColor();
 
 	afx_msg void GetListCtrlItemText(int nItem, int nCol, CString& outText);
+	afx_msg void IncreaseValues();
+	afx_msg void ResetValues();
 	afx_msg void SelectLastItemInListCtrl();
-
 };

@@ -207,6 +207,7 @@
     <ClInclude Include="CDialogGetLastItem.h" />
     <ClInclude Include="CDialogInputData.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="CSVFileReader.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="CDialogGetLastItem.cpp" />
     <ClCompile Include="CDialogInputData.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CSVFileReader.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />

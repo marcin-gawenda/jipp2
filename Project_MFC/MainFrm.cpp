@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "Project_MFC.h"
-
+#include "CSVFileReader.h"
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_SETTINGCHANGE()
 	ON_MESSAGE(WM_DIS_MSG, &CMainFrame::OnDisMsg)
 	ON_MESSAGE(WM_CLEAR_OUTPUT, &CMainFrame::OnClearOutput)
+	ON_COMMAND(ID_FILE_OPEN, &CMainFrame::OnFileOpen)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -441,3 +442,28 @@ afx_msg LRESULT CMainFrame::OnClearOutput(WPARAM wParam, LPARAM lParam)
 	m_wndOutput.ClearAll();
 	return 0;
 }
+
+
+
+
+void CMainFrame::OnFileOpen()
+{
+	CFileDialog dlg(TRUE, _T("csv"), NULL, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, _T("CSV Files (*.csv)|*.csv|All Files (*.*)|*.*||"));
+	if (dlg.DoModal() == IDOK)
+	{
+		CString filePath = dlg.GetPathName();
+		CSVFileReader csvReader(filePath);
+
+		if (csvReader.ReadCSV())
+		{
+			// Process the CSV data
+			auto data = csvReader.GetData();
+			// Do something with the data
+		}
+		else
+		{
+			AfxMessageBox(_T("Failed to open the file."));
+		}
+	}
+}
+

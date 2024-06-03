@@ -7,6 +7,7 @@
 #include "CDialogGetLastItem.h"
 #include "Resource.h"
 
+
 // Okno dialogowe CDialogGetLastItem
 
 IMPLEMENT_DYNAMIC(CDialogGetLastItem, CDialogEx)

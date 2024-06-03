@@ -203,6 +203,7 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDialogFindByName.h" />
     <ClInclude Include="CDialogGetLastItem.h" />
     <ClInclude Include="CDialogInputData.h" />
     <ClInclude Include="ClassView.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDialogFindByName.cpp" />
     <ClCompile Include="CDialogGetLastItem.cpp" />
     <ClCompile Include="CDialogInputData.cpp" />
     <ClCompile Include="ClassView.cpp" />

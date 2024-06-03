@@ -101,7 +101,7 @@ void CDialogFindByName::OnBnClickedButtonFind()
 			const MY_POINT* p = findMyPoint(&first_item, &last_item + 1, m_name); // uzycie funkcji template
 
 			if (p != nullptr) {
-				m_item_found.Format(_T("Found item:: x: %g, y: %g, color: %d, name: %s, numb: %d"), p->x, p->y, p->color, p->name, p->numb);
+				m_item_found.Format(_T("Found item: x: %g, y: %g, color: RGB(%d, %d, %d), name: %s, numb: %d"), p->x, p->y, GetRValue(p->color), GetGValue(p->color), GetBValue(p->color), p->name, p->numb);
 			}
 			else {
 				m_item_found = _T("Item not found.");

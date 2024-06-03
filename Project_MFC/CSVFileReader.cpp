@@ -13,8 +13,7 @@ bool CSVFileReader::ReadCSV()
     CStdioFile file;
     CFileException fileException;
     if (!file.Open(m_filePath, CFile::modeRead | CFile::typeText, &fileException))
-    {
-        AfxMessageBox(_T("Error while opening file for reading!"), MB_ICONERROR);
+    {     
         return false;
     }
 
@@ -36,8 +35,7 @@ bool CSVFileReader::ReadCSV()
         }
         m_data.push_back(row);
     }
-    file.Close();
-    AfxMessageBox(_T("Data imported successfully"), MB_ICONINFORMATION);
+    file.Close();   
     return true;
 }
 

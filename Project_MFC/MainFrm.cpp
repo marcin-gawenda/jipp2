@@ -458,11 +458,73 @@ void CMainFrame::OnFileOpen()
 		{
 			// Process the CSV data
 			auto data = csvReader.GetData();
+
+
+			//void CDialogInputData::ModifyData()
+			//{
+				char st[512]{ 0 };
+				BOOL ret(0);
+				MY_POINT tmp;
+
+				//UpdateData(TRUE);
+
+				MY_DATA* pDat = new MY_DATA(data.size());
+
+				for (auto it = data.begin(); it != data.end(); ++it) {
+					//*it
+					tmp.x = atof(strX);
+					tmp.y = atof(strY);
+					tmp.color = Utils::CStringToColorRef(strColor);
+					tmp.name = Utils::CStringToCharArray(strName);
+					tmp.numb = nItem;
+
+					pDat->Push(tmp);
+				}
+
+
+				//const int no_it(m_ListCtrl.GetItemCount());
+
+				//if (pDat)
+				//	delete pDat;
+				//pDocum->pDat = pDat = new MY_DATA(no_it);
+
+				//for (int nItem = 0; nItem < no_it; ++nItem)
+				//{
+				//	CString strX, strY, strColor, strName;
+				//	GetListCtrlItemText(nItem, 0, strX);
+				//	GetListCtrlItemText(nItem, 1, strY);
+				//	GetListCtrlItemText(nItem, 2, strColor);
+				//	GetListCtrlItemText(nItem, 3, strName);
+
+				//	tmp.x = atof(strX);
+				//	tmp.y = atof(strY);
+				//	tmp.color = Utils::CStringToColorRef(strColor);
+				//	tmp.name = Utils::CStringToCharArray(strName);
+				//	tmp.numb = nItem;
+
+				//	pDat->Push(tmp);
+				//}
+
+				//UpdateData(FALSE);
+
+				ASSERT_VALID(pDocum);
+				pDocum->SetModifiedFlag();
+				pDocum->UpdateAllViews(NULL);
+			//}
+
+
+
+
+
+
+
 			// Do something with the data
+			AfxMessageBox(_T("Data imported successfully"), MB_ICONINFORMATION);
 		}
 		else
 		{
-			AfxMessageBox(_T("Failed to open the file."));
+			AfxMessageBox(_T("Error while opening file for reading!"), MB_ICONERROR);
+			//AfxMessageBox(_T("Failed to open the file."));
 		}
 	}
 }
